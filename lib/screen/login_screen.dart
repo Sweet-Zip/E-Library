@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/component/custom_button.dart';
 import 'package:mobile/component/custom_textFormField.dart';
+import 'package:mobile/screen/forgot_pass_screen.dart';
+import 'package:mobile/screen/item_main_screen.dart';
 import 'package:mobile/screen/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -10,6 +12,13 @@ class LoginScreen extends StatefulWidget {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  String _errorMessage = '';
+
+  bool isEmailValid(String email) {
+    // Regular expression pattern for a basic email validation
+    final RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
+    return emailRegex.hasMatch(email);
+  }
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -18,9 +27,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: _buildBody(),
+    return Scaffold(
+      body: SafeArea(
+        child: _buildBody(),
       ),
     );
   }
@@ -52,16 +61,11 @@ class _LoginScreenState extends State<LoginScreen> {
       key: widget._formKey,
       child: Column(
         children: [
-          const SizedBox(
-            height: 100,
-          ),
+          const SizedBox(height: 150),
           Image.network(
-            "https://cdn.freefontsvault.com/2023/09/OnlyFans-new-logo-2021.webp",
-            height: 50,
-          ),
-          const SizedBox(
-            height: 25,
-          ),
+              "https://cdn.freefontsvault.com/2023/09/OnlyFans-new-logo-2021.webp",
+              height: 50),
+          const SizedBox(height: 25),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 25),
             child: Row(
@@ -74,13 +78,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
-          const SizedBox(
-            height: 25,
-          ),
+          const SizedBox(height: 25),
           _buildTextField(),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Row(
@@ -90,27 +90,49 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
-          const SizedBox(
-            height: 25,
-          ),
+          const SizedBox(height: 25),
+          if (widget._errorMessage.isNotEmpty) // Show error message if it's not empty
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                widget._errorMessage,
+                style: const TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            ),
           GestureDetector(
             onTap: () {
               if (widget._formKey.currentState!.validate()) {
-                // Validation successful, proceed with your action
                 String email = widget.emailController.text;
                 String password = widget.passwordController.text;
-                print("Email: $email");
-                print("Password: $password");
+                if (widget.isEmailValid(email)) {
+                  // Email is valid
+                  if (email == 'kuong@gmail.com' && password == 'pass') {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => ItemMainScreen(),
+                      ),
+                    );
+                  } else {
+                    setState(() {
+                      widget._errorMessage = 'Incorrect email or password'; // Set the error message
+                    });
+                  }
+                } else {
+                  // Email is not valid
+                  setState(() {
+                    widget._errorMessage = 'Email is not valid'; // Set the error message
+                  });
+                }
+
               }
             },
-            child: CustomButton(
-              emailController: widget.emailController,
-              passwordController: widget.passwordController,
+            child: const CustomButton(
+              textString: 'Sign Up',
             ),
           ),
-          const SizedBox(
-            height: 50,
-          ),
+          const SizedBox(height: 50),
           _buildRegisterBtn(),
         ],
       ),
@@ -118,8 +140,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildForgotPass() {
-    return InkWell(
-      onTap: () {},
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ForgotPassScreen(),
+          ),
+        );
+      },
       child: const Text(
         "Forgot Password?",
         style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
@@ -133,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const RegisterScreen(),
+          builder: (context) => RegisterScreen(),
         ),
       );
     }
@@ -145,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
           "Don't have any account? ",
           style: TextStyle(color: Colors.grey),
         ),
-        InkWell(
+        GestureDetector(
           onTap: _handleClick,
           child: const Text(
             "Sign Up",

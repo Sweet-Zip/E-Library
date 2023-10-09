@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   const CustomTextField({
     Key? key,
     required this.hintText,
@@ -14,36 +14,67 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final String validValue;
 
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  late bool _obscureText;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.obscureText;
+  }
+
   String? _validateInput(String? value) {
-    if (value == null || value.isEmpty || value == hintText) {
-      return validValue;
+    if (value == null || value.isEmpty || value == widget.hintText) {
+      return widget.validValue;
     }
-    return null; // Return null for no validation error
+    return null;
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
+  OutlineInputBorder outLine(Color color) {
+    return OutlineInputBorder(
+      borderSide: BorderSide(color: color, width: 1.5),
+      borderRadius: BorderRadius.circular(10.0),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    OutlineInputBorder outLine(Color color) {
-      return OutlineInputBorder(
-        borderSide: BorderSide(color: color,width: 1.5),
-        borderRadius: BorderRadius.circular(10.0),
-      );
-    }
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25),
       child: TextFormField(
-        controller: controller,
-        obscureText: obscureText,
+        controller: widget.controller,
+        obscureText: _obscureText,
         validator: _validateInput,
+        keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
-          hintText: hintText,
-          enabledBorder: outLine(Color(0xff00AEEF)),
-          focusedBorder: outLine(Color(0xff008CCF)),
+          hintText: widget.hintText,
+          enabledBorder: outLine(const Color(0xff00AEEF)),
+          focusedBorder: outLine(const Color(0xff008CCF)),
           errorBorder: outLine(Colors.red),
-          focusedErrorBorder: outLine(Color(0xff008CCF)),
+          focusedErrorBorder: outLine(const Color(0xff008CCF)),
+          // Conditionally show/hide the toggle icon based on obscureText
+          suffixIcon: widget.obscureText
+              ? IconButton(
+            icon: Icon(
+              _obscureText ? Icons.visibility : Icons.visibility_off,
+              color: Colors.grey,
+            ),
+            onPressed: _togglePasswordVisibility,
+          )
+              : null, // If obscureText is false, don't show the icon
         ),
       ),
     );
   }
 }
+
