@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile/screen/home_screen.dart';
 import 'package:mobile/screen/profile_screen.dart';
 
+import '../logic/UserLogic.dart';
+
 class ItemMainScreen extends StatefulWidget {
   ItemMainScreen({super.key});
 
@@ -18,7 +20,11 @@ class _ItemMainScreenState extends State<ItemMainScreen> {
     );
   }
 
+  final userLogic = UserLogic();
+
+
   Widget _buildBody() {
+    print(userLogic.authenticatedUsername);
     return IndexedStack(
       index: _currentIndex,
       children: [
@@ -26,7 +32,7 @@ class _ItemMainScreenState extends State<ItemMainScreen> {
         Container(color: Colors.blue),
         Container(color: Colors.purple),
         Container(color: Colors.pink),
-        ProfileScreen(),
+        ProfileScreen(authenticatedUsername: userLogic.authenticatedUsername),
       ],
     );
   }

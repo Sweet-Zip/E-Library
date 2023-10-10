@@ -5,20 +5,10 @@ import 'package:mobile/screen/forgot_pass_screen.dart';
 import 'package:mobile/screen/item_main_screen.dart';
 import 'package:mobile/screen/register_screen.dart';
 
+import '../logic/UserLogic.dart';
+
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  String _errorMessage = '';
-
-  bool isEmailValid(String email) {
-    // Regular expression pattern for a basic email validation
-    final RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
-    return emailRegex.hasMatch(email);
-  }
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -34,13 +24,27 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  String _errorMessage = '';
+
+  bool isEmailValid(String email) {
+    // Regular expression pattern for a basic email validation
+    final RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
+    return emailRegex.hasMatch(email);
+  }
+
+  UserLogic userLogic = UserLogic();
+
   Widget _buildTextField() {
     return Column(
       children: [
         CustomTextField(
           hintText: 'Email',
           obscureText: false,
-          controller: widget.emailController,
+          controller: emailController,
           validValue: 'Please input valid email',
         ),
         const SizedBox(
@@ -49,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
         CustomTextField(
           hintText: 'Password',
           obscureText: true,
-          controller: widget.passwordController,
+          controller: passwordController,
           validValue: 'Please input valid password',
         ),
       ],
@@ -58,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildBody() {
     return Form(
-      key: widget._formKey,
+      key: _formKey,
       child: Column(
         children: [
           const SizedBox(height: 150),
@@ -91,41 +95,36 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           const SizedBox(height: 25),
-          if (widget._errorMessage.isNotEmpty) // Show error message if it's not empty
+          if (_errorMessage.isNotEmpty) // Show error message if it's not empty
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                widget._errorMessage,
+                _errorMessage,
                 style: const TextStyle(
                   color: Colors.red,
                 ),
               ),
             ),
           GestureDetector(
-            onTap: () {
-              if (widget._formKey.currentState!.validate()) {
-                String email = widget.emailController.text;
-                String password = widget.passwordController.text;
-                if (widget.isEmailValid(email)) {
+            onTap: () async {
+              if (_formKey.currentState!.validate()) {
+                String email = emailController.text;
+                String password = passwordController.text;
+                if (isEmailValid(email)) {
                   // Email is valid
-                  if (email == 'kuong@gmail.com' && password == 'pass') {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => ItemMainScreen(),
-                      ),
-                    );
-                  } else {
-                    setState(() {
-                      widget._errorMessage = 'Incorrect email or password'; // Set the error message
-                    });
-                  }
+
+                  await userLogic.loginUser(
+                    context: context, // Pass the BuildContext
+                    email: email,
+                    password: password,
+                  );
                 } else {
                   // Email is not valid
                   setState(() {
-                    widget._errorMessage = 'Email is not valid'; // Set the error message
+                    _errorMessage =
+                        'Email is not valid'; // Set the error message
                   });
                 }
-
               }
             },
             child: const CustomButton(

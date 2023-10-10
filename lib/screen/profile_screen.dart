@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mobile/component/custom_button.dart';
 import 'package:mobile/screen/login_screen.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+import '../logic/UserLogic.dart';
 
+class ProfileScreen extends StatefulWidget {
+  ProfileScreen({super.key, required this.authenticatedUsername});
+  final String? authenticatedUsername;
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
@@ -60,9 +62,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         const SizedBox(height: 10),
-        const Text(
-          "Ah Ploy",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        Text(
+          widget.authenticatedUsername ?? "Unknown", // Display the authenticated username if available
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         const SizedBox(height: 10),
         GestureDetector(
@@ -89,7 +91,8 @@ class FullSizeImageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.black, // You can remove this line if you want the body to be fully black
+        color: Colors.black,
+        // You can remove this line if you want the body to be fully black
         child: Center(
           child: Image.network(imageUrl),
         ),
@@ -97,4 +100,3 @@ class FullSizeImageScreen extends StatelessWidget {
     );
   }
 }
-
