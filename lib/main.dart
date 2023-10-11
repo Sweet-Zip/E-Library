@@ -1,31 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/logic/UserLogic.dart';
+import 'package:mobile/screen/item_main_screen.dart';
 import 'package:mobile/screen/login_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(ChangeNotifierProvider(
-    create: (_) => UserLogic(),
-    child: MyApp(),
-  ));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferences.getInstance();
+  final userLogic = UserLogic(); // Create an instance of UserLogic
+  await userLogic.loadUserData(); // Load user data from SharedPreferences
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => userLogic,
+      child: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
 
-  // This widget is the root of your application.
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key});
   @override
   Widget build(BuildContext context) {
+    final userLogic = Provider.of<UserLogic>(context);
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: LoginScreen(),
+      home: userLogic.authenticatedUsername != null ? ItemMainScreen() : LoginScreen(),
     );
   }
 }
+
+
 
 /*
 import 'dart:convert';

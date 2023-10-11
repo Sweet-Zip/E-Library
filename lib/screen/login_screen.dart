@@ -112,8 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 String password = passwordController.text;
                 if (isEmailValid(email)) {
                   // Email is valid
-
-                  await userLogic.loginUser(
+                  await userLogic.loginUserWithNewId(
                     context: context, // Pass the BuildContext
                     email: email,
                     password: password,
@@ -128,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
               }
             },
             child: const CustomButton(
-              textString: 'Sign Up',
+              textString: 'Sign In',
             ),
           ),
           const SizedBox(height: 50),
