@@ -30,14 +30,16 @@ class UserService {
     }
   }
 
-  Future<void> registerUser(String email, String password) async {
+  Future<void> registerUser(
+      String username, String email, String password) async {
     final url = Uri.parse(
         'http://192.168.50.115:3000/users'); // Replace with your JSON server URL
 
     try {
       final response = await http.post(
         url,
-        body: json.encode({'email': email, 'password': password}),
+        body: json.encode(
+            {'username': username, 'email': email, 'password': password}),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -77,8 +79,8 @@ class UserService {
     required void Function(String?) onReject,
   }) async {
     try {
-      http.Response res = await http.get(Uri.parse(
-          "http://192.168.50.115:3000/users?id=$id"));
+      http.Response res =
+          await http.get(Uri.parse("http://192.168.50.115:3000/users?id=$id"));
       onResult(await compute(_convertData, res.body));
       onReject(null);
     } catch (e) {

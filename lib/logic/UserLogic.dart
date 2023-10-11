@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/screen/item_main_screen.dart';
+import 'package:mobile/screen/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_model.dart';
@@ -200,8 +201,8 @@ class UserLogic with ChangeNotifier {
           _password = user.password;
           _email = user.email;
           print('Authenticated id: $_authenticatedUsername');
-          print('Authenticated id: $_password');
-          print('Authenticated id: $_email');
+          print('Authenticated pass: $_password');
+          print('Authenticated email: $_email');
         }
       },
       onReject: (String? error) {
@@ -211,6 +212,28 @@ class UserLogic with ChangeNotifier {
         }
       },
     );
+  }
+
+  Future<void> registerUser(
+      {required BuildContext context,
+      required username,
+      required email,
+      required password}) async {
+    try {
+      await UserService().registerUser(username, email, password);
+
+      // If you want to perform any actions or update the UI after registration, do it here.
+      // For example, you can navigate to a different screen or show a success message.
+      print('Registration successful');
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(),
+        ),
+      );
+    } catch (e) {
+      // Handle any errors that might occur when calling the UserService's registerUser function.
+      print('Error during registration: $e');
+    }
   }
 
 // Future<void> userId({

@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mobile/component/custom_button.dart';
 import 'package:mobile/component/custom_textFormField.dart';
 
+import '../logic/UserLogic.dart';
+
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({super.key});
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final usernameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -26,10 +23,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  UserLogic userLogic = UserLogic();
 
   Widget _buildBody() {
     return Form(
-      key: widget._formKey,
+      key: _formKey,
       child: Column(
         children: [
           const SizedBox(
@@ -59,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           CustomTextField(
             hintText: 'Username',
-            controller: widget.usernameController,
+            controller: usernameController,
             obscureText: false,
             validValue: 'Please input valid username',
           ),
@@ -68,7 +72,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           CustomTextField(
             hintText: 'Email',
-            controller: widget.emailController,
+            controller: emailController,
             obscureText: false,
             validValue: 'Please input valid email',
           ),
@@ -77,7 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           CustomTextField(
             hintText: 'Password',
-            controller: widget.passwordController,
+            controller: passwordController,
             obscureText: true,
             validValue: 'Please input valid password',
           ),
@@ -86,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           CustomTextField(
             hintText: 'Confirm password',
-            controller: widget.confirmPasswordController,
+            controller: confirmPasswordController,
             obscureText: true,
             validValue: 'Password not match',
           ),
@@ -94,14 +98,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
             height: 25,
           ),
           GestureDetector(
-            onTap: () {
-              if (widget._formKey.currentState!.validate()) {
+            onTap: () async {
+              if (_formKey.currentState!.validate()) {
                 // Validation successful, proceed with your action
-                String user = widget.emailController.text;
-                String email = widget.emailController.text;
-                String password = widget.passwordController.text;
-                String confirmPass = widget.confirmPasswordController.text;
-
+                String user = emailController.text;
+                String email = emailController.text;
+                String password = passwordController.text;
+                String confirmPass = confirmPasswordController.text;
+                await userLogic.registerUser(
+                  context: context,
+                  username: user,
+                  email: email,
+                  password: password,
+                );
               }
             },
             child: const CustomButton(
