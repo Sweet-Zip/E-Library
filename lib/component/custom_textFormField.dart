@@ -58,23 +58,22 @@ class _CustomTextFieldState extends State<CustomTextField> {
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           hintText: widget.hintText,
-          enabledBorder: outLine(const Color(0xff00AEEF)),
-          focusedBorder: outLine(const Color(0xff008CCF)),
+          enabledBorder: outLine(Theme.of(context).colorScheme.primary),
+          focusedBorder: outLine(Theme.of(context).colorScheme.primary),
           errorBorder: outLine(Colors.red),
-          focusedErrorBorder: outLine(const Color(0xff008CCF)),
+          focusedErrorBorder: outLine(Theme.of(context).colorScheme.primary),
           // Conditionally show/hide the toggle icon based on obscureText
           suffixIcon: widget.obscureText
               ? IconButton(
-            icon: Icon(
-              _obscureText ? Icons.visibility : Icons.visibility_off,
-              color: Colors.grey,
-            ),
-            onPressed: _togglePasswordVisibility,
-          )
+                  icon: Icon(
+                    _obscureText ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey,
+                  ),
+                  onPressed: _togglePasswordVisibility,
+                )
               : null, // If obscureText is false, don't show the icon
         ),
       ),
     );
   }
 }
-

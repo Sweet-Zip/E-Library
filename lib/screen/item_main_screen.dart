@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/screen/home_screen.dart';
-import 'package:mobile/screen/profile_screen.dart';
+import 'package:mobile/screen/sub/home_screen.dart';
+import 'package:mobile/screen/sub/profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

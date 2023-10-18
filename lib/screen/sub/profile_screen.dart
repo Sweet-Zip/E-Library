@@ -3,7 +3,7 @@ import 'package:mobile/component/custom_button.dart';
 import 'package:mobile/screen/login_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../logic/UserLogic.dart';
+import '../../logic/UserLogic.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key, required this.authenticatedId});

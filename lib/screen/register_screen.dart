@@ -17,7 +17,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent, // Make the AppBar transparent
+        iconTheme: IconThemeData(
+          color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.grey.shade700,
+        ),
+        elevation: 0, // Remove the shadow
+      ),
       body: SafeArea(
         child: _buildBody(),
       ),
