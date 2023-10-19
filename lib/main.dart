@@ -3,6 +3,7 @@ import 'package:mobile/logic/UserLogic.dart';
 import 'package:mobile/screen/item_main_screen.dart';
 import 'package:mobile/screen/login_screen.dart';
 import 'package:mobile/theme/theme.dart';
+import 'package:mobile/theme/themeProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,8 +13,11 @@ void main() async {
   final userLogic = UserLogic(); // Create an instance of UserLogic
   await userLogic.loadUserData(); // Load user data from SharedPreferences
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => userLogic,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserLogic()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+      ],
       child: MyApp(),
     ),
   );
@@ -26,11 +30,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final userLogic = Provider.of<UserLogic>(context);
     return MaterialApp(
-      theme: lightMode,
-      darkTheme: darkMode,
-      home: userLogic.authenticatedUsername != null
-          ? ItemMainScreen()
-          : LoginScreen(),
+      theme: Provider.of<ThemeProvider>(context).themeData,
+      // home: userLogic.authenticatedUsername != null
+      //     ? ItemMainScreen()
+      //     : LoginScreen(),
+
+      home: ItemMainScreen(),
     );
   }
 }

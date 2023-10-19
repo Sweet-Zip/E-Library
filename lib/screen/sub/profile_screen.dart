@@ -4,6 +4,8 @@ import 'package:mobile/screen/login_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/UserLogic.dart';
+import '../setting_screen.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key, required this.authenticatedId});
@@ -28,21 +30,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final userLogic = Provider.of<UserLogic>(context, listen: false);
     await userLogic.loadUserData();
     setState(() {
-      authenticatedUsername = userLogic.authenticatedUsername ?? "DefaultUsername";
+      authenticatedUsername =
+          userLogic.authenticatedUsername ?? "DefaultUsername";
       email = userLogic.email ?? "DefaultEmail";
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Profile',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(56.0),
+        // Change the height according to your design
+        child: Builder(
+          builder: (context) {
+            Brightness brightness = Theme.of(context).brightness;
+            return AppBar(
+              title: Text(
+                'Profile',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  color: brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black, // Change the colors as needed
+                ),
+              ),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              centerTitle: true,
+              actions: [
+                IconButton(
+                  icon: Icon(
+                    Icons.settings,
+                    color: brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.grey.shade700,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => SettingScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
         ),
-        centerTitle: true,
       ),
       body: SafeArea(child: _buildBody()),
     );
